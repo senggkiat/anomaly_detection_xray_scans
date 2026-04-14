@@ -1,6 +1,8 @@
 import os
 import zipfile
 
+from tqdm import tqdm
+
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
@@ -77,7 +79,9 @@ def download_and_extract_dvxray():
 
         print(f"  Extracting {split} samples...")
         with zipfile.ZipFile(zip_path, "r") as zf:
-            zf.extractall(DATA_DIR)
+            # Extract with progress bar
+            for member in tqdm(zf.infolist(), desc=f"  Extracting {split}", unit="file"):
+                zf.extract(member, DATA_DIR)
         print(f"  Extracted to {DATA_DIR}")
 
 
