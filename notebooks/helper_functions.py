@@ -31,47 +31,54 @@ def get_directories():
 
 def _download_gdrive_file(url, dest):
     """Download a file from Google Drive, showing progress."""
-    import requests
-
-    session = requests.Session()
-    response = session.get(url, stream=True)
-
-    # Handle Google Drive virus scan warning
-    token = None
-    for key, value in response.cookies.items():
-        if key.startswith("download_warning"):
-            token = value
-    if token:
-        response = session.get(url, params={"confirm": token}, stream=True)
-
-    total_size = int(response.headers.get("content-length", 0))
-    downloaded = 0
-    with open(dest, "wb") as f:
-        for chunk in response.iter_content(chunk_size=8192):
-            f.write(chunk)
-            downloaded += len(chunk)
-            if total_size > 0:
-                percent = downloaded / total_size * 100
-                print(f"\r  Downloading: {percent:.1f}%", end="")
-    print()
+    try:
+        import gdown
+        # gdown handles Google Drive authentication properly
+        gdown.download(url, dest, quiet=False)
+    except ImportError:
+        import subprocess
+        import sys
+        print("  Installing gdown package for reliable Google Drive downloads...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "gdown"])
+        import gdown
+        gdown.download(url, dest, quiet=False)
 
 
-def download_and_extract_dvxray(root_dir):
-    """Download and extract the DvXray dataset to root_dir."""
-    os.makedirs(root_dir, exist_ok=True)
+def download_and_extract_dvxray():
+    """Download and extract the DvXray dataset to DATA_DIR."""
+    os.makedirs(DATA_DIR, exist_ok=True)
 
     for split, url in DVXRAY_URLS.items():
-        zip_path = os.path.join(root_dir, DVXRAY_FILENAMES[split])
+        zip_path = os.path.join(DATA_DIR, DVXRAY_FILENAMES[split])
         if os.path.exists(zip_path):
             print(f"  Archive already exists: {zip_path}")
         else:
             print(f"  Downloading {split} samples...")
             _download_gdrive_file(url, zip_path)
 
+        # Validate that the file is actually a zip file
+        if not zipfile.is_zipfile(zip_path):
+            # Remove the invalid file
+            os.remove(zip_path)
+            raise RuntimeError(
+                f"Downloaded file is not a valid zip: {zip_path}\n"
+                f"This may be due to Google Drive download restrictions. "
+                f"Please download the dataset manually from:\n"
+                f"  Positive samples: {DVXRAY_URLS['positive']}\n"
+                f"  Negative samples: {DVXRAY_URLS['negative']}\n"
+                f"Extract to: {DATA_DIR}"
+            )
+
+        # Check if extraction is needed
+        target_dir = os.path.join(DATA_DIR, f"DvXray_{split.capitalize()}_Samples")
+        if os.path.isdir(target_dir) and os.listdir(target_dir):
+            print(f"  {split.capitalize()} samples already extracted to {target_dir}")
+            continue
+
         print(f"  Extracting {split} samples...")
         with zipfile.ZipFile(zip_path, "r") as zf:
-            zf.extractall(root_dir)
-        print(f"  Extracted to {root_dir}")
+            zf.extractall(DATA_DIR)
+        print(f"  Extracted to {DATA_DIR}")
 
 
 def stratified_subset(dataset, n_samples, seed=42):
