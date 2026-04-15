@@ -6,11 +6,13 @@ from tqdm import tqdm
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
+from pathlib import Path
 
-
-DATA_DIR = os.path.join(os.path.dirname(os.getcwd()), "data")
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+DATA_DIR = os.path.join(PROJECT_ROOT, "data")
 POS_DIR = os.path.join(DATA_DIR, "DvXray_Positive_Samples")
 NEG_DIR = os.path.join(DATA_DIR, "DvXray_Negative_Samples")
+RESULTS_DIR = os.path.join(PROJECT_ROOT, "results")
 
 # DvXray dataset download configuration
 DVXRAY_URLS = {
@@ -22,6 +24,7 @@ DVXRAY_FILENAMES = {
     "negative": "DvXray_Negative_Samples.zip",
 }
 
+def get_
 
 def check_dvxray_exists():
     """Check if DvXray data directories exist."""
