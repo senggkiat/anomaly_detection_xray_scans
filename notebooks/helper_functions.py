@@ -24,7 +24,9 @@ DVXRAY_FILENAMES = {
     "negative": "DvXray_Negative_Samples.zip",
 }
 
-def get_
+def get_result_directory():
+    """Returns the directory for the results folder"""
+    return RESULTS_DIR
 
 def check_dvxray_exists():
     """Check if DvXray data directories exist."""
