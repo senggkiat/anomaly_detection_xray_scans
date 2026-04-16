@@ -1,2 +1,4 @@
 # Data files
 data/
+notebooks/.ipynb_checkpoints
+.DS_Store
