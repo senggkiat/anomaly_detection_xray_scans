@@ -9,7 +9,11 @@ import torch
 from pathlib import Path
 
 # PROJECT_ROOT = Path(__file__).resolve().parent.parent
-PROJECT_ROOT = Path.cwd().parent
+try:
+    PROJECT_ROOT = Path(__file__).resolve().parent.parent
+except:
+    PROJECT_ROOT = Path.cwd()
+# PROJECT_ROOT = Path.cwd().parent
 DATA_DIR = os.path.join(PROJECT_ROOT, "data")
 POS_DIR = os.path.join(DATA_DIR, "DvXray_Positive_Samples")
 NEG_DIR = os.path.join(DATA_DIR, "DvXray_Negative_Samples")
