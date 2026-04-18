@@ -39,3 +39,7 @@ pip install -r ../requirement.txt
 - **15 threat classes:** Gun, Knife, Hammer, Battery, etc.
 - **Negative samples:** Benign baggage
 - **Annotations:** JSON with bounding boxes
+
+
+
+
