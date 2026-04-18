@@ -77,21 +77,6 @@ def download_and_extract_dvxray(root_dir):
         print(f"  Extracted to {root_dir}")
 
 
-def stratified_subset(dataset, n_samples, seed=42):
-    """Stratified sampling: equal samples per class, fixed seed for reproducibility."""
-    np.random.seed(seed)
-    labels = dataset.labels.squeeze()
-    classes = np.unique(labels)
-    per_class = n_samples // len(classes)
-    indices = []
-    for c in classes:
-        class_idx = np.where(labels == c)[0]
-        chosen = np.random.choice(class_idx, size=min(per_class, len(class_idx)), replace=False)
-        indices.extend(chosen)
-    np.random.shuffle(indices)
-    return torch.utils.data.Subset(dataset, indices)
-
-
 def visualize_samples(dataset, n_classes=4):
     """Display one sample per class from DvXrayDataset (dual-view: OL + SD) with bounding boxes."""
     import os, json
@@ -184,39 +169,3 @@ def visualize_samples(dataset, n_classes=4):
     plt.tight_layout()
     plt.show()
 
-
-def plot_comparison(results):
-    """
-    Plot training loss curves and test accuracy bar chart.
-
-    Args:
-        results: dict with keys like 'CNN + Basic', 'CNN + Augmented',
-                 'ViT + Basic', 'ViT + Augmented'.
-                 Each value is a dict with 'losses' (list) and 'accuracy' (float).
-    """
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
-
-    # Loss curves
-    for name, data in results.items():
-        ax1.plot(data['losses'], label=name)
-    ax1.set_xlabel('Epoch')
-    ax1.set_ylabel('Loss')
-    ax1.set_title('Training Loss Curves')
-    ax1.legend()
-    ax1.grid(True, alpha=0.3)
-
-    # Accuracy bar chart
-    names = list(results.keys())
-    accuracies = [results[n]['accuracy'] * 100 for n in names]
-    colors = ['#2196F3', '#1565C0', '#FF9800', '#E65100']
-    bars = ax2.bar(names, accuracies, color=colors[:len(names)])
-    ax2.set_ylabel('Test Accuracy (%)')
-    ax2.set_title('Test Accuracy Comparison')
-    ax2.set_ylim(0, 100)
-    for bar, acc in zip(bars, accuracies):
-        ax2.text(bar.get_x() + bar.get_width() / 2., bar.get_height() + 1,
-                 f'{acc:.1f}%', ha='center', va='bottom', fontweight='bold')
-    plt.xticks(rotation=15, ha='right')
-
-    plt.tight_layout()
-    plt.show()
