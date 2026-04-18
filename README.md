@@ -1,4 +1,4 @@
-# CNN Model – DvXray Anomaly Detection
+# DvXray Anomaly Detection
 
 This notebook implements multiple models for anomaly detection on the DvXray dual-view X-ray baggage dataset.
 
@@ -41,5 +41,6 @@ pip install -r ../requirement.txt
 - **Annotations:** JSON with bounding boxes
 
 
+## Manual download of the Zip files (If Necessary):
 
-
+https://github.com/Mbwslib/DvXray?tab=readme-ov-file
