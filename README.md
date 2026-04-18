@@ -1,4 +1,4 @@
-# CNN Model – DvXray Anomaly Detection
+# DvXray Anomaly Detection
 
 This notebook implements multiple models for anomaly detection on the DvXray dual-view X-ray baggage dataset.
 
@@ -39,3 +39,8 @@ pip install -r ../requirement.txt
 - **15 threat classes:** Gun, Knife, Hammer, Battery, etc.
 - **Negative samples:** Benign baggage
 - **Annotations:** JSON with bounding boxes
+
+
+## Manual download of the Zip files (If Necessary):
+
+https://github.com/Mbwslib/DvXray?tab=readme-ov-file
